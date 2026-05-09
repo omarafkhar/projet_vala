@@ -584,7 +584,7 @@ def global_search(q: str = "", db: Session = Depends(get_db)):
                 "title": f"{emp.prenom} {emp.nom}",
                 "subtitle": emp.email,
                 "meta": emp.department or emp.role,
-                "url": "/",
+                "url": f"/employee/{emp.id}",
             })
 
     # ── Tasks ───────────────────────────────────────────────────────
@@ -630,13 +630,14 @@ def global_search(q: str = "", db: Session = Depends(get_db)):
                 "subtitle": f"{sender_name} → {receiver_name}",
                 "meta": msg.timestamp.strftime("%Y-%m-%d %H:%M") if msg.timestamp else "",
                 "url": "/messages",
+                "state": {"sender_id": msg.sender_id, "receiver_id": msg.receiver_id}
             })
 
     total = len(matched_employees) + len(matched_tasks) + len(matched_messages)
     return {
-        "employees": matched_employees[:10],
-        "tasks": matched_tasks[:10],
-        "messages": matched_messages[:10],
+        "employees": matched_employees[:5],
+        "tasks": matched_tasks[:5],
+        "messages": matched_messages[:5],
         "total": total,
     }
 
